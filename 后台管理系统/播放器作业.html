@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .box {
+            width: 800px;
+            height: 447px;
+            background-color: white;
+            border: 1px red solid;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        #video {
+            width: 800px;
+            height: 500px;
+            position: absolute;
+            top: -75px;
+        }
+
+        .box .meu {
+            width: 800px;
+            height: 47px;
+            position: absolute;
+            top: 400px;
+        }
+
+        /*菜单栏*/
+        .box .meu {
+            position: relative;
+            background-color: rgba(164, 182, 180, 0.2);
+        }
+
+        .box .meu span:nth-of-type(1) {
+            position: absolute;
+            left: 100px;
+            top: 15px;
+        }
+
+        .box .meu span:nth-of-type(2) {
+            position: absolute;
+            left: 150px;
+            top: 15px;
+        }
+
+        .box .meu span:nth-of-type(3) {
+            position: absolute;
+            left: 156px;
+            top: 15px;
+
+        }
+
+        .box .meu .play_bar_full {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: #999999;
+
+        }
+        .box .meu .play_bar_full  .play_bar {
+            width: 0%;
+            height: 4px;
+            background-color: blue;
+
+        }
+
+        #star {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            top: 10px;
+            left: 10px;
+            display: block;
+        }
+
+        #stop {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            top: 10px;
+            left: 10px;
+            display: none;
+        }
+
+        #volume {
+            position: absolute;
+            top: 10px;
+            left: 550px;
+        }
+
+        #screen {
+            position: absolute;
+            top: 10px;
+            left: 756px;
+        }
+
+        #circulation {
+            position: absolute;
+            top: 10px;
+            left: 675px;
+        }
+
+        #volume_control_full {
+            display: inline-block;
+            height: 10px;
+            width: 70px;
+            background-color: #b5e0ff;
+            border-radius: 4px 4px;
+            position: absolute;
+            left: 590px;
+            top: 19px;
+
+        }
+
+        #volume_control {
+            display: inline-block;
+            height: 10px;
+            /*width: 10px;*/
+            background-color: #ff4d15;
+            border-radius: 4px 4px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <video id="video" src="video/音阙诗听-赵方婧-芒种%20(录音棚版)(标清).mp4"></video>
+
+    <div class="meu">
+        <div class="play_bar_full">
+            <div class="play_bar" ></div>
+        </div>
+
+
+        <img id="star" src="播放.png" alt="" width="30" height="30">
+        <img id="stop" src="视频-暂停.png" alt="" height="30" width="30">
+        <span id="currentTime">01:32</span>
+        <span>/</span>
+        <span id="duration">03/28</span>
+        <img id="volume" src="音量.png" alt="" width="30" height="30">
+        <span id="volume_control_full">
+            <span id="volume_control" >
+
+            </span>
+        </span>
+
+        <img id="screen" src="全屏.png" alt="" width="30" height="30">
+        <img id="circulation" src="视频循环播放反.png" alt="">
+    </div>
+</div>
+<script>
+    var video = document.getElementById("video");
+    var star = document.getElementById("star");
+    var stop = document.getElementById("stop");
+    //console.log(stop)
+    var duration = document.getElementById("duration");
+    var currentTime = document.getElementById("currentTime");
+    // 进度条
+    var play_bar = document.getElementsByClassName("play_bar")[0];
+    var play_bar_full = document.getElementsByClassName("play_bar_full")[0];
+
+    var volume_full = document.getElementById("volume_control_full");
+    var volume_control = document.getElementById("volume_control");
+    //全屏控制
+    var screen = document.getElementById("screen");
+
+    //添加video播放方法
+    video.oncanplay = function () {
+        //点击播放
+        star.onclick = function () {
+            this.style.display = "none";
+            stop.style.display = "block";
+
+            video.play();
+
+        };
+        //点击暂停
+        stop.onclick = function () {
+            this.style.display = "none";
+            star.style.display = "block";
+            // console.log(star)
+            video.pause();
+            //时间进度
+        };
+        //总时长
+        duration.innerHTML = formate(video.duration);
+        //实时时长
+         video.addEventListener("timeupdate",function () {
+            //console.log(video.currentTime);
+            currentTime.innerHTML = formate(video.currentTime);
+            play_bar.style.width = (video.currentTime/video.duration)*100+"%"
+        });
+
+
+
+    //声音进度
+           volume_full.onclick = function (e) {
+            var  e = e||event;
+            var X = e.offsetX;
+            var wid = this.offsetWidth;
+           // console.log(X,wid);
+            video.volume = X/wid ;
+            volume_control.style.width = (X/wid)*100+"%";
+           // console.log(volume_control.style.width);
+        };
+      //点击快进退
+         play_bar_full.onclick = function (e) {
+            var  e = e||event;
+            var z = e.offsetX;
+            var wides = this.offsetWidth;
+
+            video.currentTime = (z/wides)*video.duration ;
+            play_bar.style.width = (z/wides)*100+"%";
+            console.log(volume_control.style.width);
+        };
+
+
+
+        //全屏显示
+        screen.onclick = function () {
+
+            video.webkitRequestFullscreen();
+
+        };
+        //格式化时间
+        function formate(t) {
+            var m = Math.floor(t / 60);
+            m < 10 ? m = "0" + m : m;
+            var s = Math.floor(t % 60);
+            s < 10 ? s = "0" + s : s;
+            return m + ":" + s;
+        }
+    };
+
+</script>
+
+</body>
+</html>
